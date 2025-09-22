@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Resumo de Carga</title>
+  <title>Resumo de Códigos</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -31,7 +31,7 @@
       background: #0056b3;
     }
     table {
-      width: 60%; /* Aumentei um pouco a largura */
+      width: 50%;
       margin: auto;
       border-collapse: collapse;
       background: white;
@@ -56,7 +56,7 @@
   </style>
 </head>
 <body>
-  <h2>Resumo de Carga por Produto</h2>
+  <h2>Resumo de Códigos</h2>
   <div class="container">
     <input type="file" id="inputCSV" accept=".csv" />
     <button id="btnVisualizar">Visualizar Dados</button>
@@ -65,8 +65,8 @@
   <table id="tabelaResumo">
     <thead>
       <tr>
-        <th>CÓDIGO DO PRODUTO</th>
-        <th>TOTAL DO BLOCO</th>
+        <th>CÓDIGO</th>
+        <th>TOTAL</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -77,70 +77,65 @@
   <script>
     document.getElementById('btnVisualizar').addEventListener('click', () => {
       const inputArquivo = document.getElementById('inputCSV');
+      
       if (inputArquivo.files.length === 0) {
         alert('Por favor, selecione um arquivo CSV.');
         return;
       }
+      
       const arquivo = inputArquivo.files[0];
       const leitor = new FileReader();
-      
-      // Define a codificação correta para ler acentos (comum em arquivos do Windows)
-      leitor.readAsText(arquivo, 'ISO-8859-1'); 
 
       leitor.onload = function(evento) {
         const textoCsv = evento.target.result;
         processarDados(textoCsv);
       };
+
+      leitor.readAsText(arquivo);
     });
 
     function processarDados(textoCsv) {
+      const separador = ';';
+
       const corpoTabela = document.querySelector('#tabelaResumo tbody');
       const spanTotalGeral = document.getElementById('totalGeral');
       corpoTabela.innerHTML = '';
-      
-      // NOTA: No Brasil, o Excel geralmente salva CSVs usando ponto e vírgula (;) como separador.
-      // Se não funcionar, tente alterar para vírgula (',').
-      const delimitador = ';';
 
-      const linhas = textoCsv.trim().split('\n');
+      const linhas = textoCsv.split('\n');
       
       let codigoAtual = null;
       let totalGeral = 0;
       const resultados = [];
 
-      linhas.forEach(linha => {
-        // Ignora linhas que podem conter o cabeçalho da página e são curtas
-        if (linha.length < 5) return;
-        
-        const colunas = linha.split(delimitador);
-        
-        // CONDIÇÃO 1: Encontrou a linha de TOTAL do bloco
-        // Verifica se a Coluna B (índice 1) contém a palavra "TOTAL"
-        if (colunas[1] && colunas[1].trim().toUpperCase() === 'TOTAL') {
-          // O total do bloco está na Coluna J (índice 9)
-          const totalBloco = parseInt(colunas[9], 10) || 0;
-
-          if (codigoAtual) { // Se tivermos um código guardado
-            resultados.push({ codigo: codigoAtual, total: totalBloco });
-            totalGeral += totalBloco;
-            codigoAtual = null; // Reseta para o próximo bloco
-          }
-        } 
-        // CONDIÇÃO 2: Encontrou uma linha que parece ser de produto
-        // Verifica se a Coluna A (índice 0) começa com um número
-        else if (colunas[0] && /^\d/.test(colunas[0].trim())) {
-           // Extrai apenas a parte numérica do início da string
-           const codigoNumerico = colunas[0].trim().match(/^\d+/);
-           if (codigoNumerico) {
-               codigoAtual = codigoNumerico[0];
-           }
+      for (const linha of linhas) {
+        if (linha.includes("RELATÓRIO EXPEDIÇÃO")) {
+          break;
         }
-      });
 
-      // Agora, preenche a tabela com os resultados encontrados
+        const colunas = linha.split(separador);
+
+        const possivelCodigo = colunas[0] ? colunas[0].trim() : '';
+        if (possivelCodigo && !isNaN(possivelCodigo)) {
+            codigoAtual = possivelCodigo;
+        }
+
+        const campoTotal = colunas[1] ? colunas[1].trim() : '';
+        if (campoTotal === 'TOTAL' && codigoAtual) {
+            const valorTotal = colunas[9] ? parseInt(colunas[9].trim(), 10) : 0;
+            
+            resultados.push({ codigo: codigoAtual, total: valorTotal });
+            
+            totalGeral += valorTotal;
+
+            codigoAtual = null;
+        }
+      }
+      
+      // Preenche a tabela HTML com os resultados
       resultados.forEach(item => {
         const novaLinha = document.createElement('tr');
-        novaLinha.innerHTML = `<td>${item.codigo}</td><td>${item.total}</td>`;
+        // AQUI ESTÁ A ALTERAÇÃO: Adicionado "0" antes de item.codigo
+        novaLinha.innerHTML = `<td>0${item.codigo}</td><td>${item.total}</td>`;
         corpoTabela.appendChild(novaLinha);
       });
       
