@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Resumo de Carga</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    .container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    button, input[type="file"] {
+      margin: 10px;
+      padding: 8px 15px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    table {
+      width: 60%; /* Aumentei um pouco a largura */
+      margin: auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    h3 {
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Resumo de Carga por Produto</h2>
+  <div class="container">
+    <input type="file" id="inputCSV" accept=".csv" />
+    <button id="btnVisualizar">Visualizar Dados</button>
+  </div>
+
+  <table id="tabelaResumo">
+    <thead>
+      <tr>
+        <th>CÓDIGO DO PRODUTO</th>
+        <th>TOTAL DO BLOCO</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h3>Total Geral de Itens: <span id="totalGeral">0</span></h3>
+
+  <script>
+    document.getElementById('btnVisualizar').addEventListener('click', () => {
+      const inputArquivo = document.getElementById('inputCSV');
+      if (inputArquivo.files.length === 0) {
+        alert('Por favor, selecione um arquivo CSV.');
+        return;
+      }
+      const arquivo = inputArquivo.files[0];
+      const leitor = new FileReader();
+      
+      // Define a codificação correta para ler acentos (comum em arquivos do Windows)
+      leitor.readAsText(arquivo, 'ISO-8859-1'); 
+
+      leitor.onload = function(evento) {
+        const textoCsv = evento.target.result;
+        processarDados(textoCsv);
+      };
+    });
+
+    function processarDados(textoCsv) {
+      const corpoTabela = document.querySelector('#tabelaResumo tbody');
+      const spanTotalGeral = document.getElementById('totalGeral');
+      corpoTabela.innerHTML = '';
+      
+      // NOTA: No Brasil, o Excel geralmente salva CSVs usando ponto e vírgula (;) como separador.
+      // Se não funcionar, tente alterar para vírgula (',').
+      const delimitador = ';';
+
+      const linhas = textoCsv.trim().split('\n');
+      
+      let codigoAtual = null;
+      let totalGeral = 0;
+      const resultados = [];
+
+      linhas.forEach(linha => {
+        // Ignora linhas que podem conter o cabeçalho da página e são curtas
+        if (linha.length < 5) return;
+        
+        const colunas = linha.split(delimitador);
+        
+        // CONDIÇÃO 1: Encontrou a linha de TOTAL do bloco
+        // Verifica se a Coluna B (índice 1) contém a palavra "TOTAL"
+        if (colunas[1] && colunas[1].trim().toUpperCase() === 'TOTAL') {
+          // O total do bloco está na Coluna J (índice 9)
+          const totalBloco = parseInt(colunas[9], 10) || 0;
+
+          if (codigoAtual) { // Se tivermos um código guardado
+            resultados.push({ codigo: codigoAtual, total: totalBloco });
+            totalGeral += totalBloco;
+            codigoAtual = null; // Reseta para o próximo bloco
+          }
+        } 
+        // CONDIÇÃO 2: Encontrou uma linha que parece ser de produto
+        // Verifica se a Coluna A (índice 0) começa com um número
+        else if (colunas[0] && /^\d/.test(colunas[0].trim())) {
+           // Extrai apenas a parte numérica do início da string
+           const codigoNumerico = colunas[0].trim().match(/^\d+/);
+           if (codigoNumerico) {
+               codigoAtual = codigoNumerico[0];
+           }
+        }
+      });
+
+      // Agora, preenche a tabela com os resultados encontrados
+      resultados.forEach(item => {
+        const novaLinha = document.createElement('tr');
+        novaLinha.innerHTML = `<td>${item.codigo}</td><td>${item.total}</td>`;
+        corpoTabela.appendChild(novaLinha);
+      });
+      
+      spanTotalGeral.textContent = totalGeral;
+    }
+  </script>
+</body>
+</html>
