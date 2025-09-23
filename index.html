@@ -6,20 +6,75 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
+      margin: 0;
+      /* Espaçamento para o cabeçalho e rodapé fixos */
+      padding-top: 70px; 
+      padding-bottom: 90px; /* AJUSTE: Espaço para o novo rodapé de botões */
       background-color: #f4f4f9;
-    }
-    h2, h3 {
-      text-align: center;
       color: #333;
     }
-    .container {
+    
+    header {
+      background-color: #0C296C;
+      color: white;
+      height: 70px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    header > div {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    .header-logo {
+      height: 60px;
+      object-fit: contain;
+    }
+    .header-title {
+      flex-grow: 1;
       text-align: center;
-      margin-bottom: 20px;
     }
+    .header-title h2 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+
+    /* --- CSS ATUALIZADO PARA O RODAPÉ DE BOTÕES --- */
+    .container-botoes {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #ffffff;
+      padding: 15px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+    
+    .container-principal {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding: 20px 20px 0 20px; /* Adiciona padding no topo */
+    }
+
     .tabela-container {
-        margin-top: 40px;
+      flex: 1;
+      min-width: 400px;
+      max-width: 600px;
     }
+
     button {
       margin: 5px;
       padding: 10px 18px;
@@ -37,8 +92,9 @@
     #btnExcluir { background: #dc3545; }
     #btnExcluir:hover { background: #c82333; }
     input[type="file"] { display: none; }
+    
     table {
-      width: 60%;
+      width: 100%;
       margin: 10px auto;
       border-collapse: collapse;
       background: white;
@@ -49,68 +105,112 @@
       border: 1px solid #ddd;
       text-align: center;
     }
-    th {
-      background: #007bff;
+    thead th {
+      background: #343a40;
       color: white;
     }
+    
+    thead tr:first-child th {
+        background-color: #007bff; 
+        font-size: 1.1em;
+    }
+
     tr:nth-child(even) { background: #f9f9f9; }
+
+    tfoot td {
+      font-weight: bold;
+      background-color: #e9ecef;
+      text-align: center;
+    }
+
+    #totalGeralContainer {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 1.2em;
+        padding-bottom: 20px;
+    }
   </style>
 </head>
 <body>
-  <h2>Resumo de Códigos</h2>
-  <div class="container">
+
+  <header>
+    <div>
+      <a href="#">
+        <img src="imagem/baixados.png" alt="Logo" class="header-logo">
+      </a>
+      <div class="header-title">
+        <h2>Resumo de Códigos</h2>
+      </div>
+    </div>
+  </header>
+  
+  <div class="container-principal">
+    <div class="tabela-container">
+      <table id="tabelaFogao65">
+        <thead>
+          <tr>
+            <th colspan="2">Fogões 6/5Q</th>
+          </tr>
+          <tr>
+            <th>CÓDIGO</th>
+            <th>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2">Total de Itens (6/5Q): <span id="totalFogao65">0</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="tabela-container">
+      <table id="tabelaFogao4">
+        <thead>
+          <tr>
+            <th colspan="2">Fogões 4Q</th>
+          </tr>
+          <tr>
+            <th>CÓDIGO</th>
+            <th>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr>
+              <td colspan="2">Total de Itens (4Q): <span id="totalFogao4">0</span></td>
+            </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div id="totalGeralContainer">
+    <h3>Total Geral de Todos os Itens: <strong id="totalGeral">0</strong></h3>
+  </div>
+
+  <div class="container-botoes">
     <input type="file" id="inputCSV" accept=".csv" />
     <button id="btnCarregar">Carregar Dados</button>
     <button id="btnAdicionar">Inserir Mais Dados</button>
     <button id="btnExcluir">Excluir Dados</button>
   </div>
 
-  <div class="tabela-container">
-    <h3>Fogões 6/5Q</h3>
-    <table id="tabelaFogao65">
-      <thead>
-        <tr>
-          <th>CÓDIGO</th>
-          <th>TOTAL</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <h4>Total de Itens (6/5Q): <span id="totalFogao65">0</span></h4>
-  </div>
-
-  <div class="tabela-container">
-    <h3>Fogões 4Q</h3>
-    <table id="tabelaFogao4">
-      <thead>
-        <tr>
-          <th>CÓDIGO</th>
-          <th>TOTAL</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    <h4>Total de Itens (4Q): <span id="totalFogao4">0</span></h4>
-  </div>
-
   <script>
+    // O JAVASCRIPT CONTINUA O MESMO
     const LOCAL_STORAGE_KEY = 'resumoDeCodigosDados_v2';
-    // A estrutura agora é: Map<código, {total: number, tipo: string}>
     let dadosAgregados = new Map();
     let limparDadosAntesDeCarregar = true;
-
-    // --- ELEMENTOS HTML ---
     const inputArquivo = document.getElementById('inputCSV');
     const btnCarregar = document.getElementById('btnCarregar');
     const btnAdicionar = document.getElementById('btnAdicionar');
     const btnExcluir = document.getElementById('btnExcluir');
-    // Referências para as duas tabelas e seus totais
     const corpoTabela65 = document.querySelector('#tabelaFogao65 tbody');
     const spanTotal65 = document.getElementById('totalFogao65');
     const corpoTabela4 = document.querySelector('#tabelaFogao4 tbody');
     const spanTotal4 = document.getElementById('totalFogao4');
-
-    // --- EVENTOS ---
+    const spanTotalGeral = document.getElementById('totalGeral');
     btnCarregar.addEventListener('click', () => {
       limparDadosAntesDeCarregar = true;
       inputArquivo.click();
@@ -136,40 +236,28 @@
       };
       leitor.readAsText(arquivo);
     });
-
-    // --- LÓGICA PRINCIPAL ---
     function processarDados(textoCsv) {
-      if (limparDadosAntesDeCarregar) {
-        dadosAgregados.clear();
-      }
-
+      if (limparDadosAntesDeCarregar) dadosAgregados.clear();
       const separador = ';';
       const linhas = textoCsv.split('\n');
-      let codigoAtual = null;
-      let descricaoAtual = ''; // Guarda a descrição do bloco atual
-
+      let codigoAtual = null, descricaoAtual = '';
       for (const linha of linhas) {
         if (linha.includes("RELATÓRIO EXPEDIÇÃO")) break;
-
         const colunas = linha.split(separador);
         const possivelCodigo = colunas[0] ? colunas[0].trim() : '';
-
         if (possivelCodigo && !isNaN(possivelCodigo)) {
           codigoAtual = possivelCodigo;
-          descricaoAtual = colunas[1] ? colunas[1].trim() : ''; // Captura a descrição
+          descricaoAtual = colunas[1] ? colunas[1].trim() : '';
         }
-
         const campoTotal = colunas[1] ? colunas[1].trim() : '';
         if (campoTotal === 'TOTAL' && codigoAtual) {
           const valorTotal = colunas[9] ? parseInt(colunas[9].trim(), 10) : 0;
-          const tipoProduto = getTipoProduto(descricaoAtual); // Classifica o produto
-
+          const tipoProduto = getTipoProduto(descricaoAtual);
           const itemExistente = dadosAgregados.get(codigoAtual) || { total: 0, tipo: tipoProduto };
           dadosAgregados.set(codigoAtual, {
             total: itemExistente.total + valorTotal,
-            tipo: tipoProduto // O tipo de um produto não muda
+            tipo: tipoProduto
           });
-          
           codigoAtual = null;
           descricaoAtual = '';
         }
@@ -177,28 +265,19 @@
       salvarDados();
       renderizarTabelas();
     }
-
     function getTipoProduto(descricao) {
-        // Usa uma expressão regular para encontrar um número de 4 dígitos na descrição
-        const match = descricao.match(/\b(\d{4})\b/);
-        if (match) {
-            const primeiroDigito = match[1][0];
-            if (primeiroDigito === '5' || primeiroDigito === '6') {
-                return '65Q';
-            }
-            if (primeiroDigito === '4') {
-                return '4Q';
-            }
-        }
-        return 'outro'; // Categoria para produtos não identificados
+      const match = descricao.match(/\b(\d{4})\b/);
+      if (match) {
+        const primeiroDigito = match[1][0];
+        if (['5', '6'].includes(primeiroDigito)) return '65Q';
+        if (primeiroDigito === '4') return '4Q';
+      }
+      return 'outro';
     }
-
-    // --- PERSISTÊNCIA E RENDERIZAÇÃO ---
     function salvarDados() {
       const dadosArray = [...dadosAgregados.entries()];
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dadosArray));
     }
-
     function carregarDados() {
       const dadosSalvos = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (dadosSalvos) {
@@ -207,21 +286,14 @@
         renderizarTabelas();
       }
     }
-
     function renderizarTabelas() {
-      // Limpa ambas as tabelas
       corpoTabela65.innerHTML = '';
       corpoTabela4.innerHTML = '';
-      let total65 = 0;
-      let total4 = 0;
-
+      let total65 = 0, total4 = 0;
       const dadosOrdenados = new Map([...dadosAgregados.entries()].sort());
-
       dadosOrdenados.forEach((item, codigo) => {
         const novaLinha = document.createElement('tr');
         novaLinha.innerHTML = `<td>0${codigo}</td><td>${item.total}</td>`;
-
-        // Decide em qual tabela inserir a linha
         if (item.tipo === '65Q') {
           corpoTabela65.appendChild(novaLinha);
           total65 += item.total;
@@ -230,13 +302,10 @@
           total4 += item.total;
         }
       });
-
-      // Atualiza os totais de ambas as tabelas
       spanTotal65.textContent = total65;
       spanTotal4.textContent = total4;
+      spanTotalGeral.textContent = total65 + total4;
     }
-
-    // --- INICIALIZAÇÃO ---
     carregarDados();
   </script>
 </body>
