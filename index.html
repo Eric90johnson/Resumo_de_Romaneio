@@ -9,6 +9,7 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
+      /* Espaçamento para o cabeçalho e rodapé fixos */
       padding-top: 70px; 
       padding-bottom: 90px;
       background-color: #f4f4f9;
@@ -68,7 +69,6 @@
 
     .container-botoes button { margin: 0 5px; }
 
-    /* CORREÇÃO: Readiciona a regra para esconder o input de arquivo original */
     input[type="file"] { display: none; }
     
     table {
@@ -97,6 +97,11 @@
         font-weight: bold;
         text-align: center;
     }
+    
+    .actions-container {
+        text-align: center;
+        margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -110,18 +115,24 @@
 
   <div class="container-principal">
     <div class="tabela-container">
-      <table id="tabelaFogao65" class="table table-bordered table-striped">
+      <table id="tabelaFogao65">
         <thead><tr><th colspan="2">Fogões 6/5Q</th></tr><tr><th>CÓDIGO</th><th>TOTAL</th></tr></thead>
         <tbody></tbody>
         <tfoot><tr><td colspan="2">Total de Itens (6/5Q): <span id="totalFogao65">0</span></td></tr></tfoot>
       </table>
+      <div class="actions-container">
+        <button id="btnCopiar65" class="btn btn-secondary btn-sm">Copiar Dados</button>
+      </div>
     </div>
     <div class="tabela-container">
-      <table id="tabelaFogao4" class="table table-bordered table-striped">
+      <table id="tabelaFogao4">
         <thead><tr><th colspan="2">Fogões 4Q</th></tr><tr><th>CÓDIGO</th><th>TOTAL</th></tr></thead>
         <tbody></tbody>
         <tfoot><tr><td colspan="2">Total de Itens (4Q): <span id="totalFogao4">0</span></td></tr></tfoot>
       </table>
+      <div class="actions-container">
+        <button id="btnCopiar4" class="btn btn-secondary btn-sm">Copiar Dados</button>
+      </div>
     </div>
   </div>
 
@@ -173,12 +184,13 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
   <script>
-    // NENHUMA MUDANÇA NO JAVASCRIPT
     const LOCAL_STORAGE_KEY = 'resumoDeCodigosDados_v2';
     let dadosAgregados = new Map();
     let limparDadosAntesDeCarregar = true;
-    let dadosIniciaisCarregados = false;
+    let dadosIniciaisCarregados = false; 
+
     const inputArquivo = document.getElementById('inputCSV');
     const btnCarregar = document.getElementById('btnCarregar');
     const btnAdicionar = document.getElementById('btnAdicionar');
@@ -186,11 +198,16 @@
     const btnConfirmarExclusaoFinal = document.getElementById('btnConfirmarExclusaoFinal');
     const modalAviso = new bootstrap.Modal(document.getElementById('modalAvisoCarregamento'));
     const modalExclusao = new bootstrap.Modal(document.getElementById('modalConfirmarExclusao'));
+    
+    const btnCopiar65 = document.getElementById('btnCopiar65');
+    const btnCopiar4 = document.getElementById('btnCopiar4');
+    
     const corpoTabela65 = document.querySelector('#tabelaFogao65 tbody');
     const spanTotal65 = document.getElementById('totalFogao65');
     const corpoTabela4 = document.querySelector('#tabelaFogao4 tbody');
     const spanTotal4 = document.getElementById('totalFogao4');
     const spanTotalGeral = document.getElementById('totalGeral');
+
     btnCarregar.addEventListener('click', () => {
       if (dadosIniciaisCarregados) {
         modalAviso.show();
@@ -199,13 +216,16 @@
         inputArquivo.click();
       }
     });
+
     btnAdicionar.addEventListener('click', () => {
       limparDadosAntesDeCarregar = false;
       inputArquivo.click();
     });
+
     btnExcluir.addEventListener('click', () => {
       modalExclusao.show();
     });
+
     btnConfirmarExclusaoFinal.addEventListener('click', () => {
         dadosAgregados.clear();
         localStorage.removeItem(LOCAL_STORAGE_KEY);
@@ -213,6 +233,17 @@
         renderizarTabelas();
         modalExclusao.hide();
     });
+    
+    btnCopiar65.addEventListener('click', () => {
+        const textoParaCopiar = gerarTextoTabela(corpoTabela65);
+        copiarParaClipboard(textoParaCopiar, btnCopiar65);
+    });
+
+    btnCopiar4.addEventListener('click', () => {
+        const textoParaCopiar = gerarTextoTabela(corpoTabela4);
+        copiarParaClipboard(textoParaCopiar, btnCopiar4);
+    });
+
     inputArquivo.addEventListener('change', (evento) => { 
         const arquivo = evento.target.files[0];
         if (!arquivo) return;
@@ -229,6 +260,56 @@
         }
         inputArquivo.value = '';
     });
+
+    function gerarTextoTabela(tbody) {
+        const linhas = [];
+        tbody.querySelectorAll('tr').forEach(linha => {
+            const colunas = [];
+            linha.querySelectorAll('td').forEach(coluna => {
+                colunas.push(coluna.textContent);
+            });
+            linhas.push(colunas.join('\t'));
+        });
+        return linhas.join('\n');
+    }
+    
+    function copiarParaClipboard(texto, botao) {
+        if (!texto) {
+            alert('Não há dados para copiar.');
+            return;
+        }
+        navigator.clipboard.writeText(texto).then(() => {
+            const textoOriginal = botao.textContent;
+            botao.textContent = 'Copiado!';
+            botao.classList.remove('btn-secondary');
+            botao.classList.add('btn-success');
+            setTimeout(() => {
+                botao.textContent = textoOriginal;
+                botao.classList.remove('btn-success');
+                botao.classList.add('btn-secondary');
+            }, 2000);
+        }).catch(err => {
+            console.error('Falha ao copiar texto: ', err);
+            alert('Não foi possível copiar os dados.');
+        });
+    }
+
+    function processarArquivoCSV(textoCsv) { 
+      const separador = ';'; 
+      const linhas = textoCsv.split('\n'); 
+      const dados = linhas.map(linha => linha.split(separador)); 
+      aplicarLogicaDeNegocio(dados); 
+    }
+
+    function processarArquivoExcel(arrayBuffer) { 
+      const data = new Uint8Array(arrayBuffer); 
+      const workbook = XLSX.read(data, {type: 'array'}); 
+      const nomePlanilha = workbook.SheetNames[0]; 
+      const planilha = workbook.Sheets[nomePlanilha]; 
+      const dados = XLSX.utils.sheet_to_json(planilha, {header: 1}); 
+      aplicarLogicaDeNegocio(dados); 
+    }
+
     function aplicarLogicaDeNegocio(linhas) {
       if (limparDadosAntesDeCarregar) {
         dadosAgregados.clear();
@@ -261,6 +342,22 @@
       salvarDados();
       renderizarTabelas();
     }
+
+    function getTipoProduto(descricao) { 
+      const match = descricao.match(/\b(\d{4})\b/); 
+      if (match) { 
+        const primeiroDigito = match[1][0]; 
+        if (['5', '6'].includes(primeiroDigito)) return '65Q'; 
+        if (primeiroDigito === '4') return '4Q'; 
+      } 
+      return 'outro'; 
+    }
+
+    function salvarDados() { 
+      const dadosArray = [...dadosAgregados.entries()]; 
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dadosArray)); 
+    }
+
     function carregarDados() {
       const dadosSalvos = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (dadosSalvos) {
@@ -272,11 +369,28 @@
         renderizarTabelas();
       }
     }
-    function processarArquivoCSV(textoCsv) { const separador = ';'; const linhas = textoCsv.split('\n'); const dados = linhas.map(linha => linha.split(separador)); aplicarLogicaDeNegocio(dados); }
-    function processarArquivoExcel(arrayBuffer) { const data = new Uint8Array(arrayBuffer); const workbook = XLSX.read(data, {type: 'array'}); const nomePlanilha = workbook.SheetNames[0]; const planilha = workbook.Sheets[nomePlanilha]; const dados = XLSX.utils.sheet_to_json(planilha, {header: 1}); aplicarLogicaDeNegocio(dados); }
-    function getTipoProduto(descricao) { const match = descricao.match(/\b(\d{4})\b/); if (match) { const primeiroDigito = match[1][0]; if (['5', '6'].includes(primeiroDigito)) return '65Q'; if (primeiroDigito === '4') return '4Q'; } return 'outro'; }
-    function salvarDados() { const dadosArray = [...dadosAgregados.entries()]; localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dadosArray)); }
-    function renderizarTabelas() { corpoTabela65.innerHTML = ''; corpoTabela4.innerHTML = ''; let total65 = 0, total4 = 0; const dadosOrdenados = new Map([...dadosAgregados.entries()].sort()); dadosOrdenados.forEach((item, codigo) => { const novaLinha = document.createElement('tr'); novaLinha.innerHTML = `<td>0${codigo}</td><td>${item.total}</td>`; if (item.tipo === '65Q') { corpoTabela65.appendChild(novaLinha); total65 += item.total; } else if (item.tipo === '4Q') { corpoTabela4.appendChild(novaLinha); total4 += item.total; } }); spanTotal65.textContent = total65; spanTotal4.textContent = total4; spanTotalGeral.textContent = total65 + total4; }
+
+    function renderizarTabelas() {
+      corpoTabela65.innerHTML = '';
+      corpoTabela4.innerHTML = '';
+      let total65 = 0, total4 = 0;
+      const dadosOrdenados = new Map([...dadosAgregados.entries()].sort());
+      dadosOrdenados.forEach((item, codigo) => {
+        const novaLinha = document.createElement('tr');
+        novaLinha.innerHTML = `<td>0${codigo}</td><td>${item.total}</td>`;
+        if (item.tipo === '65Q') {
+          corpoTabela65.appendChild(novaLinha);
+          total65 += item.total;
+        } else if (item.tipo === '4Q') {
+          corpoTabela4.appendChild(novaLinha);
+          total4 += item.total;
+        }
+      });
+      spanTotal65.textContent = total65;
+      spanTotal4.textContent = total4;
+      spanTotalGeral.textContent = total65 + total4;
+    }
+    
     carregarDados();
   </script>
 </body>
