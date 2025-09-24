@@ -56,14 +56,15 @@
       justify-content: center;
       align-items: flex-start;
       flex-wrap: wrap;
-      gap: 20px; 
+      /* ALTERAÇÃO: Diminuído o espaçamento entre as tabelas */
+      gap: 5px; 
       padding: 20px 20px 0 20px;
     }
 
     .tabela-container {
       flex: 1;
-      min-width: 360px; 
-      max-width: 500px;
+      min-width: 50px; 
+      max-width: 300px;
     }
 
     .container-botoes button { margin: 0 5px; }
@@ -71,15 +72,25 @@
     input[type="file"] { display: none; }
     
     table {
-      width: 100%;
+      width: auto; 
       margin: 10px auto;
       border-collapse: collapse;
       background: white;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      table-layout: auto; 
     }
-    th, td { padding: 12px; border: 1px solid #ddd; text-align: center; }
-    thead th { background: #343a40; color: white; }
+    th, td { 
+        padding: 8px 10px;
+        border: 1px solid #ddd; 
+        text-align: center; 
+    }
+    thead th { 
+      background: #343a40; 
+      color: white; 
+      white-space: nowrap;
+    }
     thead tr:first-child th { background-color: #007bff; font-size: 1.1em; }
+    
     tr:nth-child(even) { background: #f9f9f9; }
     tfoot td { font-weight: bold; background-color: #e9ecef; }
 
@@ -120,6 +131,7 @@
       .container-principal {
         display: flex !important;
         justify-content: center !important;
+        /* Aplicado também na impressão para consistência */
         gap: 15px !important;
         flex-wrap: nowrap !important;
         padding: 0 !important;
@@ -237,7 +249,9 @@
     btnConfirmarImpressao.addEventListener('click', () => {
         const checkboxes = document.querySelectorAll('#modalImpressao .form-check-input');
         modalImpressao.hide();
-        todosOsContainers.forEach(container => { container.classList.add('d-print-none'); });
+        todosOsContainers.forEach(container => {
+            container.classList.add('d-print-none');
+        });
         checkboxes.forEach(check => {
             if (check.checked) {
                 const containerId = check.value;
