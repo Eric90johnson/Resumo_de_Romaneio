@@ -175,7 +175,7 @@ function aplicarLogicaDeNegocio(linhas) {
 
 function getTipoProduto(descricao) { 
   const descUpper = String(descricao || '').toUpperCase();
-  const keywordsRefrigeracao = ["BEBEDOURO", "REFRIGERADOR", "CONSERVADOR", "PURIFICADOR", "FREEZER"];
+  const keywordsRefrigeracao = ["BEBEDOURO", "REFRIGERADOR", "CONSERVADOR", "PURIFICADOR", "FREEZER", "VITRINE"];
   if (keywordsRefrigeracao.some(keyword => descUpper.includes(keyword))) { return 'Refrigeracao'; }
   const match = descUpper.match(/\b(\d{4})\b/); 
   if (match) { 
