@@ -1,0 +1,171 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding-top: 70px; 
+  padding-bottom: 90px;
+  background-color: #f4f4f9;
+  color: #333;
+}
+
+header {
+  background-color: #0C296C;
+  color: white;
+  height: 70px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+header > div {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.header-logo { 
+  height: 60px; 
+  object-fit: contain; 
+}
+
+.header-title { 
+  flex-grow: 1; 
+  text-align: center; 
+}
+
+.header-title h2 { 
+  margin: 0; 
+  font-size: 1.5em; 
+}
+
+.container-botoes {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  padding: 15px 0;
+  text-align: center;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+.container-principal {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 15px; 
+  padding: 20px 20px 0 20px;
+}
+
+.tabela-container {
+  flex: 1;
+  min-width: 50px; 
+  max-width: 300px;
+}
+
+.container-botoes button { 
+  margin: 0 5px; 
+}
+
+input[type="file"] { 
+  display: none; 
+}
+
+table {
+  width: auto; 
+  margin: 10px auto;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  table-layout: auto; 
+}
+
+th, td { 
+    padding: 8px 10px;
+    border: 1px solid #ddd; 
+    text-align: center; 
+}
+
+thead th { 
+  background: #343a40; 
+  color: white; 
+  white-space: nowrap;
+}
+
+thead tr:first-child th { 
+  background-color: #007bff; 
+  font-size: 1.1em; 
+}
+
+tr:nth-child(even) { 
+  background: #f9f9f9; 
+}
+
+tfoot td { 
+  font-weight: bold; 
+  background-color: #e9ecef; 
+}
+
+#totalGeralContainer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 1.2em;
+    padding-bottom: 20px;
+}
+
+.mensagem-erro {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.actions-container {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* --- ESTILOS DE IMPRESSÃO --- */
+@media print {
+  @page {
+    size: portrait;
+  }
+  body {
+    padding: 0;
+    background-color: #ffffff;
+  }
+  .no-print {
+    display: none !important;
+  }
+  header {
+    position: static;
+    box-shadow: none;
+  }
+  .container-principal {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 15px !important;
+    flex-wrap: nowrap !important;
+    padding: 0 !important;
+  }
+  .tabela-container {
+    page-break-inside: avoid;
+    font-size: 9pt;
+    box-shadow: none;
+    padding-top: 20px;
+    display: none; 
+  }
+  .imprimir-bloco {
+      display: block !important;
+  }
+  table, th, td {
+    border: 1px solid #666;
+  }
+}

@@ -56,11 +56,11 @@
       justify-content: center;
       align-items: flex-start;
       flex-wrap: wrap;
-      /* ALTERAÇÃO: Diminuído o espaçamento entre as tabelas */
-      gap: 5px; 
+      gap: 15px; 
       padding: 20px 20px 0 20px;
     }
 
+    /* SUA ALTERAÇÃO FINAL E CORRETA */
     .tabela-container {
       flex: 1;
       min-width: 50px; 
@@ -131,7 +131,6 @@
       .container-principal {
         display: flex !important;
         justify-content: center !important;
-        /* Aplicado também na impressão para consistência */
         gap: 15px !important;
         flex-wrap: nowrap !important;
         padding: 0 !important;
@@ -371,7 +370,7 @@
       if (match) { 
         const primeiroDigito = match[1][0]; 
         if (['5', '6'].includes(primeiroDigito)) return '65Q'; 
-        if (primeiroDigito === '4') return '4Q'; 
+        if (primeiroDigo === '4') return '4Q'; 
       } 
       return 'outro'; 
     }
