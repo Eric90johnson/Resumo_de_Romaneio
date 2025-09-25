@@ -148,6 +148,11 @@ tfoot td {
     position: static;
     box-shadow: none;
   }
+
+  .container mt-3 {
+    display: none !important;
+  }
+  
   .container-principal {
     display: flex !important;
     justify-content: center !important;
