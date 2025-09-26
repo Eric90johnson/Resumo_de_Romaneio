@@ -121,6 +121,23 @@ tfoot td {
     padding-bottom: 20px;
 }
 
+#tipoRomaneioContainer {
+  text-align: center;
+  margin-top: 10px;
+  padding-bottom: 20px;
+}
+
+#tipoRomaneioContainer h5 {
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.checkbox-group {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
 .mensagem-erro {
     font-size: 1.5rem;
     font-weight: bold;
@@ -149,7 +166,7 @@ tfoot td {
     box-shadow: none;
   }
 
-  .container mt-3 {
+  .container.mt-3 {
     display: none !important;
   }
   
