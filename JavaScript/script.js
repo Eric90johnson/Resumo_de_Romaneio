@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             alert('Formato de arquivo não suportado.');
         }
-        inputArquivo.value = ''; // Limpa o input para permitir carregar o mesmo arquivo novamente
+        inputArquivo.value = '';
     });
 
     checkCargaFracionada.addEventListener('change', () => {
@@ -148,10 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function copiarParaClipboard(texto, botao) {
-        if (!texto) {
-            alert('Não há dados para copiar.');
-            return;
-        }
+        if (!texto) { alert('Não há dados para copiar.'); return; }
         navigator.clipboard.writeText(texto).then(() => {
             const textoOriginal = botao.textContent;
             botao.textContent = 'Copiado!';
@@ -171,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const separador = ';'; 
       const linhas = textoCsv.split('\n'); 
       const dados = linhas.map(linha => linha.split(separador)); 
-      aplicarLogicaDeNegocio(dados); 
+      processarDadosImportados(dados);
     }
 
     function processarArquivoExcel(arrayBuffer) {
@@ -180,15 +177,32 @@ document.addEventListener('DOMContentLoaded', function() {
             const nomePlanilha = workbook.SheetNames[0];
             const planilha = workbook.Sheets[nomePlanilha];
             const dados = XLSX.utils.sheet_to_json(planilha, {header: 1});
-            aplicarLogicaDeNegocio(dados);
+            processarDadosImportados(dados);
         } catch (e) {
             console.error("Falha ao ler o arquivo Excel.", e);
             alert('Não foi possível ler o arquivo Excel. O arquivo pode estar corrompido ou em um formato não suportado.');
         }
     }
 
-    function aplicarLogicaDeNegocio(linhas) {
-      if (limparDadosAntesDeCarregar) { dadosAgregados.clear(); }
+    function processarDadosImportados(linhas) {
+        if (limparDadosAntesDeCarregar) {
+            dadosAgregados.clear();
+        }
+
+        if (checkCargaFracionada.checked) {
+            logicaCargaFracionada(linhas);
+        } else if (checkCargaFechada.checked) {
+            logicaCargaFechada(linhas);
+        }
+
+        if (dadosAgregados.size > 0) {
+            dadosIniciaisCarregados = true;
+        }
+        salvarDados();
+        renderizarTabelas();
+    }
+
+    function logicaCargaFracionada(linhas) {
       let codigoAtual = null, descricaoAtual = '';
       for (const colunas of linhas) {
         try {
@@ -217,12 +231,36 @@ document.addEventListener('DOMContentLoaded', function() {
             descricaoAtual = '';
           }
         } catch (error) {
-            console.warn("Linha ignorada por erro:", error, "Dados da linha:", colunas);
+            console.warn("Linha ignorada por erro (Carga Fracionada):", error, "Dados da linha:", colunas);
         }
       }
-      if (dadosAgregados.size > 0) { dadosIniciaisCarregados = true; }
-      salvarDados();
-      renderizarTabelas();
+    }
+
+    function logicaCargaFechada(linhas) {
+        for (const colunas of linhas) {
+            try {
+                if (!Array.isArray(colunas) || colunas.length < 4) continue;
+
+                if (String(colunas[0] || '').includes('Fim do relatório')) {
+                    break;
+                }
+
+                const codigo = String(colunas[0] || '').trim();
+                const descricao = String(colunas[1] || '').trim();
+                const quantidade = parseInt(String(colunas[3] || '0').trim(), 10);
+
+                if (codigo && !isNaN(codigo) && descricao && !isNaN(quantidade) && quantidade > 0) {
+                    const tipoProduto = getTipoProduto(descricao);
+                    const itemExistente = dadosAgregados.get(codigo) || { total: 0, tipo: tipoProduto };
+                    dadosAgregados.set(codigo, {
+                        total: itemExistente.total + quantidade,
+                        tipo: tipoProduto
+                    });
+                }
+            } catch (error) {
+                console.warn("Linha ignorada por erro (Carga Fechada):", error, "Dados da linha:", colunas);
+            }
+        }
     }
 
     function getTipoProduto(descricao) { 
@@ -269,7 +307,12 @@ document.addEventListener('DOMContentLoaded', function() {
       
       dadosOrdenados.forEach((item, codigo) => {
         const novaLinha = document.createElement('tr');
+        // =========================================================================
+        // ALTERAÇÃO APLICADA AQUI
+        // =========================================================================
         novaLinha.innerHTML = `<td>0${codigo}</td><td>${item.total}</td>`;
+        // =========================================================================
+
         if (item.tipo === '65Q') {
           corpoTabela65.appendChild(novaLinha);
           total65 += item.total;
