@@ -11,10 +11,17 @@ const btnConfirmarExclusaoFinal = document.getElementById('btnConfirmarExclusaoF
 const btnAbrirModalImpressao = document.getElementById('btnAbrirModalImpressao');
 const btnConfirmarImpressao = document.getElementById('btnConfirmarImpressao');
 
+// Referência para os checkboxes
+const checkCargaFracionada = document.getElementById('checkCargaFracionada');
+const checkCargaFechada = document.getElementById('checkCargaFechada');
+
 const modalAviso = new bootstrap.Modal(document.getElementById('modalAvisoCarregamento'));
 const modalExclusao = new bootstrap.Modal(document.getElementById('modalConfirmarExclusao'));
 const modalAvisoInserir = new bootstrap.Modal(document.getElementById('modalAvisoInserir'));
 const modalImpressao = new bootstrap.Modal(document.getElementById('modalImpressao'));
+
+// Inicialização do novo modal de alerta
+const modalAvisoRomaneio = new bootstrap.Modal(document.getElementById('modalAvisoRomaneio'));
 
 const btnCopiar65 = document.getElementById('btnCopiar65');
 const btnCopiar4 = document.getElementById('btnCopiar4');
@@ -53,8 +60,36 @@ window.onafterprint = function() {
     });
 };
 
-btnCarregar.addEventListener('click', () => { if (dadosIniciaisCarregados) { modalAviso.show(); } else { limparDadosAntesDeCarregar = true; inputArquivo.click(); } });
-btnAdicionar.addEventListener('click', () => { if (dadosIniciaisCarregados) { limparDadosAntesDeCarregar = false; inputArquivo.click(); } else { modalAvisoInserir.show(); } });
+// Event listener do botão "Carregar Dados" com a nova validação
+btnCarregar.addEventListener('click', () => {
+    if (dadosIniciaisCarregados) {
+        modalAviso.show();
+        return;
+    }
+    // Validação dos checkboxes
+    if (!checkCargaFracionada.checked && !checkCargaFechada.checked) {
+        modalAvisoRomaneio.show();
+        return;
+    }
+    limparDadosAntesDeCarregar = true;
+    inputArquivo.click();
+});
+
+// Event listener do botão "Adicionar Mais Dados" com a nova validação
+btnAdicionar.addEventListener('click', () => {
+    if (!dadosIniciaisCarregados) {
+        modalAvisoInserir.show();
+        return;
+    }
+    // Validação dos checkboxes
+    if (!checkCargaFracionada.checked && !checkCargaFechada.checked) {
+        modalAvisoRomaneio.show();
+        return;
+    }
+    limparDadosAntesDeCarregar = false;
+    inputArquivo.click();
+});
+
 btnExcluir.addEventListener('click', () => { modalExclusao.show(); });
 btnConfirmarExclusaoFinal.addEventListener('click', () => { dadosAgregados.clear(); localStorage.removeItem(LOCAL_STORAGE_KEY); dadosIniciaisCarregados = false; renderizarTabelas(); modalExclusao.hide(); });
 btnCopiar65.addEventListener('click', () => { const textoParaCopiar = gerarTextoTabela(corpoTabela65); copiarParaClipboard(textoParaCopiar, btnCopiar65); });
@@ -68,7 +103,7 @@ inputArquivo.addEventListener('change', (evento) => {
     leitor.onerror = function(e) { console.error("ERRO GRAVE: Ocorreu um erro ao tentar ler o arquivo.", e); alert("Não foi possível ler o arquivo. Ele pode estar protegido ou corrompido."); };
     if (nomeArquivo.endsWith('.csv')) {
         leitor.onload = (e) => processarArquivoCSV(e.target.result);
-        leitor.readAsText(arquivo, 'ISO-8859-1'); // Especificando encoding para caracteres latinos
+        leitor.readAsText(arquivo, 'ISO-8859-1'); 
     } else if (nomeArquivo.endsWith('.xlsx') || nomeArquivo.endsWith('.xls')) {
         leitor.onload = (e) => processarArquivoExcel(e.target.result);
         leitor.readAsArrayBuffer(arquivo);
@@ -76,6 +111,19 @@ inputArquivo.addEventListener('change', (evento) => {
         alert('Formato de arquivo não suportado.');
     }
     inputArquivo.value = '';
+});
+
+// Lógica para que apenas um checkbox possa ser selecionado por vez
+checkCargaFracionada.addEventListener('change', () => {
+    if (checkCargaFracionada.checked) {
+        checkCargaFechada.checked = false;
+    }
+});
+
+checkCargaFechada.addEventListener('change', () => {
+    if (checkCargaFechada.checked) {
+        checkCargaFracionada.checked = false;
+    }
 });
 
 function gerarTextoTabela(tbody) {
@@ -147,7 +195,7 @@ function aplicarLogicaDeNegocio(linhas) {
       }
 
       const possivelCodigo = String(colunas[0] || '').trim();
-      if (possivelCodigo && !isNaN(possivelCodigo) && possivelCodigo.length > 3) { // Validação simples
+      if (possivelCodigo && !isNaN(possivelCodigo) && possivelCodigo.length > 3) {
         codigoAtual = possivelCodigo;
         descricaoAtual = String(colunas[1] || '').trim();
       }
