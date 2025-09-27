@@ -44,6 +44,44 @@ header > div {
   font-size: 1.5em; 
 }
 
+.main-content-wrapper {
+  max-width: calc(3 * 300px + 2 * 15px);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+#containerCarga {
+  padding: 20px 0 10px 0;
+  padding-left: 45px;
+}
+
+#containerCarga h5 {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}
+
+.carga-inputs {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.carga-input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.carga-input-group .form-label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.print-only {
+  display: none;
+}
+
 .container-botoes {
   position: fixed;
   bottom: 0;
@@ -62,7 +100,6 @@ header > div {
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 15px; 
-  padding: 20px 20px 0 20px;
 }
 
 .tabela-container {
@@ -149,7 +186,6 @@ tfoot td {
     margin-top: 10px;
 }
 
-/* --- ESTILOS DE IMPRESSÃO --- */
 @media print {
   @page {
     size: portrait;
@@ -166,8 +202,45 @@ tfoot td {
     box-shadow: none;
   }
 
-  .container.mt-3 {
-    display: none !important;
+  .main-content-wrapper {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  #containerCarga {
+    text-align: left;
+    padding: 20px 0;
+    font-size: 12pt;
+  }
+  
+  #containerCarga h5 {
+    font-size: 14pt;
+  }
+
+  #containerCarga input {
+    display: none;
+  }
+  
+  .carga-input-group label {
+      display: none;
+  }
+
+  .print-only {
+    display: inline-block !important;
+    padding: 5px;
+    min-width: 150px;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .print-only:before {
+    content: attr(data-label);
+    font-weight: normal;
+    margin-right: 8px;
+  }
+
+  .carga-inputs {
+    justify-content: flex-start;
   }
   
   .container-principal {

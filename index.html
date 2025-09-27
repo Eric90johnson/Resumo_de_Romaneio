@@ -16,49 +16,56 @@
     </div>
   </header>    
 
-  <div class="container mt-3">
-      <div class="row">
-        <div class="col-auto">
-          <label for="numCarga" class="form-label">Número da carga:</label>
-          <input type="text" class="form-control form-control-sm mb-1" id="numCarga" maxlength="15" size="10" placeholder="Carga 1 5/6Q...">
-          <input type="text" class="form-control form-control-sm" id="numCarga2" maxlength="15" size="10" placeholder="Carga 2 4Q...">
+  <main class="main-content-wrapper">
+    <div id="containerCarga">
+      <h5>Número da carga:</h5>
+      <div class="carga-inputs">
+        <div class="carga-input-group">
+          <label for="numCarga" class="form-label">Carga 6/5Q:</label>
+          <input type="text" class="form-control form-control-sm" id="numCarga" maxlength="15" size="15">
+          <span class="print-only" id="printNumCarga"></span>
+        </div>
+        <div class="carga-input-group">
+          <label for="numCarga2" class="form-label">Carga 4Q:</label>
+          <input type="text" class="form-control form-control-sm" id="numCarga2" maxlength="15" size="15">
+          <span class="print-only" id="printNumCarga2"></span>
         </div>
       </div>
-  </div>
-  
-  
-  <div class="container-principal">     
-    <div id="containerFogao65" class="tabela-container">
-      <table id="tabelaFogao65">
-        <thead><tr><th colspan="2">Fogões 6/5Q</th></tr><tr><th>CÓDIGO</th><th>TOTAL</th></tr></thead>
-        <tbody></tbody>
-        <tfoot><tr><td colspan="2">Total de Itens (6/5Q): <span id="totalFogao65">0</span></td></tr></tfoot>
-      </table>
-      <div class="actions-container no-print">
-        <button id="btnCopiar65" class="btn btn-primary btn-sm">Copiar Dados</button>
+    </div>
+    
+    <div class="container-principal">     
+      <div id="containerFogao65" class="tabela-container">
+        <table id="tabelaFogao65">
+          <thead><tr><th colspan="2">Fogões 6/5Q</th></tr><tr><th>CÓDIGO</th><th>TOTAL</th></tr></thead>
+          <tbody></tbody>
+          <tfoot><tr><td colspan="2">Total de Itens (6/5Q): <span id="totalFogao65">0</span></td></tr></tfoot>
+        </table>
+        <div class="actions-container no-print">
+          <button id="btnCopiar65" class="btn btn-primary btn-sm">Copiar Dados</button>
+        </div>
+      </div>
+      <div id="containerFogao4" class="tabela-container">
+        <table id="tabelaFogao4">
+          <thead><tr><th colspan="2">Fogões 4Q</th></tr><tr><th>CÓDIGO</th><th>TOTAL</th></tr></thead>
+          <tbody></tbody>
+          <tfoot><tr><td colspan="2">Total de Itens (4Q): <span id="totalFogao4">0</span></td></tr></tfoot>
+        </table>
+        <div class="actions-container no-print">
+          <button id="btnCopiar4" class="btn btn-primary btn-sm">Copiar Dados</button>
+        </div>
+      </div>
+      <div id="containerRefrigeracao" class="tabela-container">
+        <table id="tabelaRefrigeracao">
+          <thead><tr><th colspan="2">Refrigeração</th></tr><tr><th>CÓDIGO</th><th>TOTAL</th></tr></thead>
+          <tbody></tbody>
+          <tfoot><tr><td colspan="2">Total de Itens (Refrigeração): <span id="totalRefrigeracao">0</span></td></tr></tfoot>
+        </table>
+        <div class="actions-container no-print">
+          <button id="btnCopiarRefrigeracao" class="btn btn-primary btn-sm">Copiar Dados</button>
+        </div>
       </div>
     </div>
-    <div id="containerFogao4" class="tabela-container">
-      <table id="tabelaFogao4">
-        <thead><tr><th colspan="2">Fogões 4Q</th></tr><tr><th>CÓDIGO</th><th>TOTAL</th></tr></thead>
-        <tbody></tbody>
-        <tfoot><tr><td colspan="2">Total de Itens (4Q): <span id="totalFogao4">0</span></td></tr></tfoot>
-      </table>
-      <div class="actions-container no-print">
-        <button id="btnCopiar4" class="btn btn-primary btn-sm">Copiar Dados</button>
-      </div>
-    </div>
-    <div id="containerRefrigeracao" class="tabela-container">
-      <table id="tabelaRefrigeracao">
-        <thead><tr><th colspan="2">Refrigeração</th></tr><tr><th>CÓDIGO</th><th>TOTAL</th></tr></thead>
-        <tbody></tbody>
-        <tfoot><tr><td colspan="2">Total de Itens (Refrigeração): <span id="totalRefrigeracao">0</span></td></tr></tfoot>
-      </table>
-      <div class="actions-container no-print">
-        <button id="btnCopiarRefrigeracao" class="btn btn-primary btn-sm">Copiar Dados</button>
-      </div>
-    </div>
-  </div>
+  </main>
 
   <div id="totalGeralContainer" class="no-print">
     <h3>Total Geral de Todos os Itens: <strong id="totalGeral">0</strong></h3>
@@ -73,7 +80,7 @@
       </div>
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" id="checkCargaFechada" value="fechada">
-        <label class="form-check-label" for="checkCargaFechada">Carga Fechada</label>
+        <label class="form-check-label" for="checkCargaFechada">Romaneio de Carga Fechada</label>
       </div>
     </div>
   </div>

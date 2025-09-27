@@ -15,6 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnAbrirModalImpressao = document.getElementById('btnAbrirModalImpressao');
     const btnConfirmarImpressao = document.getElementById('btnConfirmarImpressao');
 
+    const numCargaInput = document.getElementById('numCarga');
+    const numCarga2Input = document.getElementById('numCarga2');
+    const printNumCargaSpan = document.getElementById('printNumCarga');
+    const printNumCarga2Span = document.getElementById('printNumCarga2');
+
     const checkCargaFracionada = document.getElementById('checkCargaFracionada');
     const checkCargaFechada = document.getElementById('checkCargaFechada');
 
@@ -39,6 +44,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalAvisoRomaneio = new bootstrap.Modal(document.getElementById('modalAvisoRomaneio'));
 
     // --- Funções de Validação e Eventos ---
+    
+    numCargaInput.addEventListener('input', () => {
+        printNumCargaSpan.textContent = numCargaInput.value;
+        printNumCargaSpan.dataset.label = "Carga 1 5/6Q:";
+    });
+
+    numCarga2Input.addEventListener('input', () => {
+        printNumCarga2Span.textContent = numCarga2Input.value;
+        printNumCarga2Span.dataset.label = "Carga 2 4Q:";
+    });
+
     function validarTipoRomaneio() {
         if (!checkCargaFracionada.checked && !checkCargaFechada.checked) {
             modalAvisoRomaneio.show();
@@ -70,15 +86,29 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     btnExcluir.addEventListener('click', () => { modalExclusao.show(); });
+    
+    // =========================================================================
+    // ALTERAÇÃO APLICADA AQUI
+    // =========================================================================
     btnConfirmarExclusaoFinal.addEventListener('click', () => { 
         dadosAgregados.clear(); 
         localStorage.removeItem(LOCAL_STORAGE_KEY); 
         dadosIniciaisCarregados = false; 
+        
+        // Limpa os checkboxes
         checkCargaFracionada.checked = false;
         checkCargaFechada.checked = false;
+        
+        // Limpa os campos de número de carga
+        numCargaInput.value = '';
+        numCarga2Input.value = '';
+        printNumCargaSpan.textContent = '';
+        printNumCarga2Span.textContent = '';
+        
         renderizarTabelas(); 
         modalExclusao.hide(); 
     });
+    // =========================================================================
 
     inputArquivo.addEventListener('change', (evento) => { 
         const arquivo = evento.target.files[0]; if (!arquivo) return;
@@ -307,12 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       dadosOrdenados.forEach((item, codigo) => {
         const novaLinha = document.createElement('tr');
-        // =========================================================================
-        // ALTERAÇÃO APLICADA AQUI
-        // =========================================================================
         novaLinha.innerHTML = `<td>0${codigo}</td><td>${item.total}</td>`;
-        // =========================================================================
-
         if (item.tipo === '65Q') {
           corpoTabela65.appendChild(novaLinha);
           total65 += item.total;
