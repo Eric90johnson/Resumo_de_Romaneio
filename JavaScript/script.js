@@ -17,8 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const numCargaInput = document.getElementById('numCarga');
     const numCarga2Input = document.getElementById('numCarga2');
+    const numCargaRefriInput = document.getElementById('numCargaRefri');
     const printNumCargaSpan = document.getElementById('printNumCarga');
     const printNumCarga2Span = document.getElementById('printNumCarga2');
+    const printNumCargaRefriSpan = document.getElementById('printNumCargaRefri');
 
     const checkCargaFracionada = document.getElementById('checkCargaFracionada');
     const checkCargaFechada = document.getElementById('checkCargaFechada');
@@ -47,12 +49,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     numCargaInput.addEventListener('input', () => {
         printNumCargaSpan.textContent = numCargaInput.value;
-        printNumCargaSpan.dataset.label = "Carga 1 5/6Q:";
+        printNumCargaSpan.dataset.label = "Carga 6/5Q:";
     });
 
     numCarga2Input.addEventListener('input', () => {
         printNumCarga2Span.textContent = numCarga2Input.value;
-        printNumCarga2Span.dataset.label = "Carga 2 4Q:";
+        printNumCarga2Span.dataset.label = "Carga 4Q:";
+    });
+
+    numCargaRefriInput.addEventListener('input', () => {
+        printNumCargaRefriSpan.textContent = numCargaRefriInput.value;
+        printNumCargaRefriSpan.dataset.label = "Carga Refrigeração:";
     });
 
     function validarTipoRomaneio() {
@@ -87,28 +94,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     btnExcluir.addEventListener('click', () => { modalExclusao.show(); });
     
-    // =========================================================================
-    // ALTERAÇÃO APLICADA AQUI
-    // =========================================================================
     btnConfirmarExclusaoFinal.addEventListener('click', () => { 
         dadosAgregados.clear(); 
         localStorage.removeItem(LOCAL_STORAGE_KEY); 
         dadosIniciaisCarregados = false; 
         
-        // Limpa os checkboxes
         checkCargaFracionada.checked = false;
         checkCargaFechada.checked = false;
         
-        // Limpa os campos de número de carga
         numCargaInput.value = '';
         numCarga2Input.value = '';
+        numCargaRefriInput.value = '';
         printNumCargaSpan.textContent = '';
         printNumCarga2Span.textContent = '';
+        printNumCargaRefriSpan.textContent = '';
         
         renderizarTabelas(); 
         modalExclusao.hide(); 
     });
-    // =========================================================================
 
     inputArquivo.addEventListener('change', (evento) => { 
         const arquivo = evento.target.files[0]; if (!arquivo) return;
