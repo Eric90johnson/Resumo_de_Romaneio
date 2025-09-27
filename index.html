@@ -63,7 +63,7 @@
         <table id="tabelaRefrigeracao">
           <thead><tr><th colspan="2">Refrigeração</th></tr><tr><th>CÓDIGO</th><th>TOTAL</th></tr></thead>
           <tbody></tbody>
-          <tfoot><tr><td colspan="2">Total de Itens (Refrigeração): <span id="totalRefrigeracao">0</span></td></tr></tfoot>
+          <tfoot><tr><td colspan="2">Total de Itens (Refr.): <span id="totalRefrigeracao">0</span></td></tr></tfoot>
         </table>
         <div class="actions-container no-print">
           <button id="btnCopiarRefrigeracao" class="btn btn-primary btn-sm">Copiar Dados</button>
@@ -81,11 +81,21 @@
     <div class="checkbox-group">
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" id="checkCargaFracionada" value="fracionada">
-        <label class="form-check-label" for="checkCargaFracionada">Carga Fracionada</label>
+        <label class="form-check-label" for="checkCargaFracionada" 
+               data-bs-toggle="tooltip" 
+               data-bs-placement="top"
+               title="Os arquivos para importação devem ser do tipo excel no formato XLSX e CSV. Obs. Romaneios de carga direta não importarão os dados se esse botão for selecionado">
+               Carga Fracionada
+        </label>
       </div>
       <div class="form-check form-check-inline">
         <input class="form-check-input" type="checkbox" id="checkCargaFechada" value="fechada">
-        <label class="form-check-label" for="checkCargaFechada">Romaneio de Carga Fechada</label>
+        <label class="form-check-label" for="checkCargaFechada"
+               data-bs-toggle="tooltip" 
+               data-bs-placement="top"
+               title="Para importar os dados e necessário baixar do EBS o RESUMO DE CARGA em Excel no formato XLSX e CSV. Obs. Romaneios de carga fracionada não importarão os dados se esse botão for selecionado">
+               Carga Fechada
+        </label>
       </div>
     </div>
   </div>

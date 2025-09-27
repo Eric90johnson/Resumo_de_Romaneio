@@ -44,6 +44,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalAvisoInserir = new bootstrap.Modal(document.getElementById('modalAvisoInserir'));
     const modalImpressao = new bootstrap.Modal(document.getElementById('modalImpressao'));
     const modalAvisoRomaneio = new bootstrap.Modal(document.getElementById('modalAvisoRomaneio'));
+    
+    // --- Inicialização dos Tooltips ---
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
     // --- Funções de Validação e Eventos ---
     
