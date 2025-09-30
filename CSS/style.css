@@ -7,12 +7,12 @@ body {
   color: #333;
 }
 
-#backgroundImage{
-  background-image: url('../imagem/tela-fogao-ideal.jpg'); /* Substitua 'sua-imagem.jpg' pelo nome e caminho da sua imagem */
-  background-repeat: no-repeat; /* Para que a imagem não se repita */
-  background-size: cover; /* Para a imagem cobrir toda a área do fundo */
-  background-position: center; /* Para centralizar a imagem */
-}
+/*#backgroundImage{*/
+/*  background-image: url('../imagem/tela-fogao-ideal.jpg'); /* Substitua 'sua-imagem.jpg' pelo nome e caminho da sua imagem */
+/*  background-repeat: no-repeat; /* Para que a imagem não se repita */
+/*  background-size: cover; /* Para a imagem cobrir toda a área do fundo */
+/*  background-position: center; /* Para centralizar a imagem */
+/* } */
 
 header {
   background-color: #0C296C;
